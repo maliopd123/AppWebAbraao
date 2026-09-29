@@ -1,0 +1,203 @@
+@page "/atividades/produtos"
+
+<PageTitle>Atividade - Cadastro de Produtos</PageTitle>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-1">Sistema de Produtos</h1>
+            <p class="text-muted mb-0">Atividade do desafio PW - Abraão Genelhud</p>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(mensagemTexto))
+    {
+        <div class="alert alert-@mensagemTipo" role="alert">
+            @mensagemTexto
+        </div>
+    }
+
+    <div class="card mb-4 shadow-sm border-0">
+        <div class="card-body">
+            <h2 class="h4 mb-3">Cadastrar produto</h2>
+
+            <EditForm Model="produtoAtual" OnValidSubmit="SalvarProduto">
+                <DataAnnotationsValidator />
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="nome" class="form-label">Nome do produto</label>
+                        <InputText id="nome" class="form-control" @bind-Value="produtoAtual.Nome" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="categoria" class="form-label">Categoria</label>
+                        <InputText id="categoria" class="form-control" @bind-Value="produtoAtual.Categoria" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="preco" class="form-label">Preço</label>
+                        <InputNumber id="preco" class="form-control" @bind-Value="produtoAtual.Preco" TValue="decimal" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="quantidade" class="form-label">Quantidade em estoque</label>
+                        <InputNumber id="quantidade" class="form-control" @bind-Value="produtoAtual.Quantidade" TValue="int" />
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">@BotaoTexto</button>
+                    <button type="button" class="btn btn-secondary" @onclick="LimparFormulario">Limpar</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h2 class="h4 mb-3">Lista de produtos</h2>
+
+            @if (produtos.Count == 0)
+            {
+                <p class="text-muted text-center mb-0">Nenhum produto cadastrado.</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered align-middle mb-0">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Produto</th>
+                                <th>Categoria</th>
+                                <th>Preço</th>
+                                <th>Quantidade</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var produto in produtos)
+                            {
+                                <tr>
+                                    <td>@produto.Nome</td>
+                                    <td>@produto.Categoria</td>
+                                    <td>@produto.Preco.ToString("C")</td>
+                                    <td>@produto.Quantidade</td>
+                                    <td>
+                                        <button type="button" class="btn btn-warning btn-sm me-2" @onclick="() => EditarProduto(produto)">Editar</button>
+                                        <button type="button" class="btn btn-danger btn-sm" @onclick="() => ExcluirProduto(produto)">Excluir</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<ProdutoCadastro> produtos = new();
+    private ProdutoCadastro produtoAtual = new();
+    private bool modoEdicao;
+    private string mensagemTexto = string.Empty;
+    private string mensagemTipo = "success";
+
+    private string BotaoTexto => modoEdicao ? "Salvar alterações" : "Cadastrar";
+
+    private void SalvarProduto()
+    {
+        if (string.IsNullOrWhiteSpace(produtoAtual.Nome) || string.IsNullOrWhiteSpace(produtoAtual.Categoria))
+        {
+            MostrarMensagem("Preencha todos os campos.", "danger");
+            return;
+        }
+
+        if (produtoAtual.Preco <= 0)
+        {
+            MostrarMensagem("O preço deve ser maior que zero.", "danger");
+            return;
+        }
+
+        if (produtoAtual.Quantidade < 0)
+        {
+            MostrarMensagem("A quantidade não pode ser negativa.", "danger");
+            return;
+        }
+
+        if (modoEdicao)
+        {
+            var produtoEditado = produtos.FirstOrDefault(p => p.Id == produtoAtual.Id);
+            if (produtoEditado is not null)
+            {
+                produtoEditado.Nome = produtoAtual.Nome;
+                produtoEditado.Categoria = produtoAtual.Categoria;
+                produtoEditado.Preco = produtoAtual.Preco;
+                produtoEditado.Quantidade = produtoAtual.Quantidade;
+                MostrarMensagem("Produto alterado com sucesso.", "success");
+            }
+        }
+        else
+        {
+            produtoAtual.Id = produtos.Count == 0 ? 1 : produtos.Max(p => p.Id) + 1;
+            produtos.Add(new ProdutoCadastro
+            {
+                Id = produtoAtual.Id,
+                Nome = produtoAtual.Nome,
+                Categoria = produtoAtual.Categoria,
+                Preco = produtoAtual.Preco,
+                Quantidade = produtoAtual.Quantidade
+            });
+            MostrarMensagem("Produto cadastrado com sucesso.", "success");
+        }
+
+        LimparFormulario();
+    }
+
+    private void EditarProduto(ProdutoCadastro produto)
+    {
+        produtoAtual = new ProdutoCadastro
+        {
+            Id = produto.Id,
+            Nome = produto.Nome,
+            Categoria = produto.Categoria,
+            Preco = produto.Preco,
+            Quantidade = produto.Quantidade
+        };
+
+        modoEdicao = true;
+    }
+
+    private void ExcluirProduto(ProdutoCadastro produto)
+    {
+        produtos.Remove(produto);
+        if (modoEdicao && produtoAtual.Id == produto.Id)
+        {
+            LimparFormulario();
+        }
+
+        MostrarMensagem("Produto excluído.", "success");
+    }
+
+    private void LimparFormulario()
+    {
+        produtoAtual = new ProdutoCadastro();
+        modoEdicao = false;
+    }
+
+    private void MostrarMensagem(string texto, string tipo)
+    {
+        mensagemTexto = texto;
+        mensagemTipo = tipo;
+    }
+
+    private class ProdutoCadastro
+    {
+        public int Id { get; set; }
+        public string Nome { get; set; } = string.Empty;
+        public string Categoria { get; set; } = string.Empty;
+        public decimal Preco { get; set; }
+        public int Quantidade { get; set; }
+    }
+}

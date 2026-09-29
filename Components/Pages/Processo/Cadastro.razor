@@ -1,0 +1,91 @@
+@page "/processos/cadastro"
+@rendermode InteractiveServer
+
+@using AppWebAbraao.Model
+@using AppWebAbraao.DAO
+@inject ProcessoDAO ProcessoDAO
+@inject NavigationManager Navigation
+
+<PageTitle>Novo Processo - Sistema de Controle de Processos</PageTitle>
+
+<div class="mb-4">
+    <h2>Cadastro de Processo</h2>
+    <p class="text-muted mb-0">Preencha os dados para cadastrar um novo processo.</p>
+</div>
+
+<div class="custom-table-card p-4">
+    <EditForm Model="processo" OnValidSubmit="Salvar" FormName="cadastro-processo">
+        <DataAnnotationsValidator />
+
+        @if (erro is not null)
+        {
+            <div class="alert alert-danger" role="alert">@erro</div>
+        }
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-4">
+                <label for="numero" class="form-label">Número</label>
+                <InputText id="numero" class="form-control" @bind-Value="processo.Numero" />
+                <ValidationMessage For="() => processo.Numero" class="text-danger small" />
+            </div>
+            <div class="col-md-4">
+                <label for="data" class="form-label">Data</label>
+                <InputDate id="data" class="form-control" @bind-Value="processo.Data" />
+                <ValidationMessage For="() => processo.Data" class="text-danger small" />
+            </div>
+            <div class="col-md-4">
+                <label for="situacao" class="form-label">Situação</label>
+                <InputSelect id="situacao" class="form-select" @bind-Value="processo.Situacao">
+                    <option value="Aberto">Aberto</option>
+                    <option value="Em analise">Em análise</option>
+                    <option value="Pendente">Pendente</option>
+                    <option value="Concluido">Concluído</option>
+                    <option value="Arquivado">Arquivado</option>
+                </InputSelect>
+                <ValidationMessage For="() => processo.Situacao" class="text-danger small" />
+            </div>
+            <div class="col-12">
+                <label for="interessado" class="form-label">Interessado</label>
+                <InputText id="interessado" class="form-control" @bind-Value="processo.Interessado" />
+                <ValidationMessage For="() => processo.Interessado" class="text-danger small" />
+            </div>
+            <div class="col-12">
+                <label for="assunto" class="form-label">Assunto</label>
+                <InputText id="assunto" class="form-control" @bind-Value="processo.Assunto" />
+                <ValidationMessage For="() => processo.Assunto" class="text-danger small" />
+            </div>
+            <div class="col-12">
+                <label for="descricao" class="form-label">Descrição</label>
+                <InputTextArea id="descricao" class="form-control" rows="4" @bind-Value="processo.Descricao" />
+                <ValidationMessage For="() => processo.Descricao" class="text-danger small" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" disabled="@salvando">@(salvando ? "Salvando..." : "Salvar")</button>
+        <a href="/processos" class="btn btn-light border ms-2">Cancelar</a>
+    </EditForm>
+</div>
+
+@code {
+    private Processo processo = new();
+    private string? erro;
+    private bool salvando;
+
+    private void Salvar()
+    {
+        if (salvando) return;
+
+        salvando = true;
+        erro = null;
+        try
+        {
+            ProcessoDAO.Inserir(processo);
+            Navigation.NavigateTo("/processos");
+        }
+        catch (Exception)
+        {
+            erro = "Não foi possível salvar o processo. Verifique a conexão com o banco e tente novamente.";
+            salvando = false;
+        }
+    }
+}
