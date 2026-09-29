@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "vunE3P8l/MY=",
+  "dgSpecHash": "AgMWng2wT34=",
   "success": true,
-  "projectFilePath": "C:\\Users\\2024102020046\\Downloads\\APP_WEB_Cadastro_de_Processo\\APP WEB novo hoje 29 09\\AppWebAbraao.csproj",
+  "projectFilePath": "C:\\Users\\2024102020046\\Documents\\AppWebAbraao\\AppWebAbraao.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\2024102020046\\.nuget\\packages\\bouncycastle.cryptography\\2.6.2\\bouncycastle.cryptography.2.6.2.nupkg.sha512",
     "C:\\Users\\2024102020046\\.nuget\\packages\\google.protobuf\\3.35.0\\google.protobuf.3.35.0.nupkg.sha512",

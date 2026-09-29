@@ -526,11 +526,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\2024102020046\\Downloads\\APP_WEB_Cadastro_de_Processo\\APP WEB novo hoje 29 09\\AppWebAbraao.csproj",
+      "projectUniqueName": "C:\\Users\\2024102020046\\Documents\\AppWebAbraao\\AppWebAbraao.csproj",
       "projectName": "AppWebAbraao",
-      "projectPath": "C:\\Users\\2024102020046\\Downloads\\APP_WEB_Cadastro_de_Processo\\APP WEB novo hoje 29 09\\AppWebAbraao.csproj",
+      "projectPath": "C:\\Users\\2024102020046\\Documents\\AppWebAbraao\\AppWebAbraao.csproj",
       "packagesPath": "C:\\Users\\2024102020046\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\2024102020046\\Downloads\\APP_WEB_Cadastro_de_Processo\\APP WEB novo hoje 29 09\\obj\\",
+      "outputPath": "C:\\Users\\2024102020046\\Documents\\AppWebAbraao\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
