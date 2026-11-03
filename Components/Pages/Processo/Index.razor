@@ -53,8 +53,17 @@
                         <td>@processo.Interessado</td>
                         <td>@processo.Assunto</td>
                         <td>@processo.Situacao</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-primary" disabled>Visualizar</button>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <a href="@($"/processos/editar/{processo.Id}")"
+                                   class="btn btn-light border text-primary"
+                                   title="Editar"
+                                   aria-label="Editar processo @processo.Numero">Editar</a>
+                                <a href="@($"/processos/excluir/{processo.Id}")"
+                                   class="btn btn-light border text-danger"
+                                   title="Excluir"
+                                   aria-label="Excluir processo @processo.Numero">Excluir</a>
+                            </div>
                         </td>
                     </tr>
                 }

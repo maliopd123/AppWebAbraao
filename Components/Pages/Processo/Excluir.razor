@@ -1,0 +1,101 @@
+@page "/processos/excluir/{Id:int}"
+@rendermode InteractiveServer
+
+@using AppWebAbraao.Model
+@using AppWebAbraao.DAO
+@inject ProcessoDAO ProcessoDAO
+@inject NavigationManager Navigation
+
+<PageTitle>Excluir Processo - Sistema de Controle de Processos</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-1">Excluir Processo</h2>
+</div>
+
+<div class="custom-table-card p-4">
+    @if (erro is not null)
+    {
+        <div class="alert alert-danger" role="alert">@erro</div>
+    }
+
+    @if (!processoEncontrado && erro is null)
+    {
+        <div class="alert alert-warning" role="alert">
+            Processo não encontrado.
+            <a href="/processos" class="alert-link">Voltar para a lista</a>
+        </div>
+    }
+    else if (processo is not null)
+    {
+        <div class="alert alert-danger" role="alert">
+            Tem certeza de que deseja excluir este processo? Esta ação não pode ser desfeita.
+        </div>
+
+        <dl class="row mb-4">
+            <dt class="col-sm-3">Número</dt>
+            <dd class="col-sm-9">@processo.Numero</dd>
+            <dt class="col-sm-3">Interessado</dt>
+            <dd class="col-sm-9">@processo.Interessado</dd>
+            <dt class="col-sm-3">Assunto</dt>
+            <dd class="col-sm-9">@processo.Assunto</dd>
+            <dt class="col-sm-3">Situação</dt>
+            <dd class="col-sm-9">@processo.Situacao</dd>
+        </dl>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-danger" @onclick="ConfirmarExclusao" disabled="@excluindo">
+                @(excluindo ? "Excluindo..." : "Excluir")
+            </button>
+            <a href="/processos" class="btn btn-light border">Cancelar</a>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Processo? processo;
+    private bool processoEncontrado;
+    private bool excluindo;
+    private string? erro;
+
+    protected override void OnParametersSet()
+    {
+        erro = null;
+        processoEncontrado = false;
+
+        try
+        {
+            processo = ProcessoDAO.ObterPorId(Id);
+            processoEncontrado = processo is not null;
+        }
+        catch (Exception)
+        {
+            processo = null;
+            erro = "Não foi possível carregar o processo. Verifique a conexão com o banco de dados.";
+        }
+    }
+
+    private void ConfirmarExclusao()
+    {
+        if (excluindo || processo is null)
+        {
+            return;
+        }
+
+        excluindo = true;
+        erro = null;
+
+        try
+        {
+            ProcessoDAO.Excluir(Id);
+            Navigation.NavigateTo("/processos");
+        }
+        catch (Exception)
+        {
+            erro = "Não foi possível excluir o processo. Verifique a conexão com o banco e tente novamente.";
+            excluindo = false;
+        }
+    }
+}

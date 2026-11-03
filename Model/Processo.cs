@@ -11,7 +11,7 @@ namespace AppWebAbraao.Model
         public string Numero { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Informe a data.")]
-        public DateTime? Data { get; set; }
+        public DateOnly? Data { get; set; }
 
         [Required(ErrorMessage = "Informe o interessado.")]
         [StringLength(200, ErrorMessage = "O interessado pode ter até 200 caracteres.")]
